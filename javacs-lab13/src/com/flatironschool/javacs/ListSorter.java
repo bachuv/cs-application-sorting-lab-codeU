@@ -63,8 +63,44 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> mergeSort(List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+        if(list.size() == 1){
+            return list;
+        }
+        
+        List<T> first = list.subList(0, list.size()/2);
+        List<T> second = list.subList(list.size()/2, list.size());
+        
+        insertionSort(first, comparator);
+        insertionSort(second, comparator);
+        
+        List<T> mergedList = new ArrayList<T>();
+        
+        int left = 0, right = 0;
+        
+        while(left != first.size() && right != second.size()){
+            if(comparator.compare(first.get(left), second.get(right)) <= 0){
+                mergedList.add(first.get(left));
+                left++;
+            }else{
+                mergedList.add(second.get(right));
+                right++;
+            }
+        }
+        
+        if(left < first.size()){
+            while(left < first.size()){
+                mergedList.add(first.get(left));
+                left++;
+            }
+        }
+        if(right < second.size()){
+            while(right < second.size()){
+                mergedList.add(second.get(right));
+                right++;
+            }
+        }
+        
+        return mergedList;
 	}
 
 	/**
@@ -75,7 +111,20 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public void heapSort(List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
+        PriorityQueue<T> queue = new PriorityQueue();
+        
+        //add all of the items in the list to the queue
+        for(T item: list){
+            queue.offer(item);
+        }
+        
+        list.clear();//clear the list to replace it with the sorted list
+        
+        //add items to the list in ascending order
+        //they are already sorted in the priority queue
+        while(queue.size() > 0){
+            list.add(queue.poll());
+        }
 	}
 
 	
@@ -89,8 +138,25 @@ public class ListSorter<T> {
 	 * @return
 	 */
 	public List<T> topK(int k, List<T> list, Comparator<T> comparator) {
-        // FILL THIS IN!
-        return null;
+        PriorityQueue<T> heap = new PriorityQueue();
+        List<T> largest = new ArrayList<T>();
+        
+        for(T item: list){
+            if(heap.size() < k){//add the item because there is still space
+                heap.offer(item);
+            }else if(comparator.compare(item, heap.peek()) > 0){
+                heap.poll();//remove the smallest number
+                heap.offer(item);//add the new item
+            }
+        }
+        
+        //add the largest 'k' elements to the list
+        for(int i = 0; i < k; ++i){
+            largest.add(heap.poll());
+        }
+        
+        return largest;
+        
 	}
 
 	
